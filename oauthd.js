@@ -2,10 +2,10 @@
 // This is a library file that handles the OAuth flow with Slack.
 //
 
-var rq = require('request');
+const rq = require('request');
 
 module.exports = {
-  oauth: oauth
+  oauth,
 };
 
 // https://api.slack.com/methods/oauth.access
@@ -16,29 +16,29 @@ function oauth(code, uri) {
     form: {
       client_id: process.env.SLACK_CLIENT_ID,
       client_secret: process.env.SLACK_CLIENT_SECRET,
-      code: code
-    }
+      code,
+    },
   });
 }
 
 // teensy conversion to Promise-based API
 function post(options) {
-  return new Promise(function(resolve, reject) {
-    rq.post(options, function(error, response, body) {
-        if (error) {
-          console.log('http error');
-          reject(error);
-        }
-        if (options.transform) {
-          body = options.transform(body);
-        }
-        if (body.ok) {
-          console.log('success');
-          resolve(body);
-        } else {
-          console.log('API error');
-          reject(body.error || body);
-        }
-      });
+  return new Promise((resolve, reject) => {
+    rq.post(options, (error, response, body) => {
+      if (error) {
+        console.log('http error');
+        reject(error);
+      }
+      if (options.transform) {
+        body = options.transform(body);
+      }
+      if (body.ok) {
+        console.log('success');
+        resolve(body);
+      } else {
+        console.log('API error');
+        reject(body.error || body);
+      }
+    });
   });
 }
